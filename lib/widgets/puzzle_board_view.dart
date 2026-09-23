@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'dart:typed_data';
 
 import '../providers/puzzle_provider.dart';
 import '../models/puzzle_mode.dart';
@@ -13,6 +14,7 @@ class PuzzleBoardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final game = context.watch<PuzzleProvider>();
     final colors = Theme.of(context).colorScheme;
+    final isImagePuzzle = game.mode == PuzzleMode.image;
 
     return AspectRatio(
       aspectRatio: 1,
@@ -20,7 +22,7 @@ class PuzzleBoardView extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: colors.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: isImagePuzzle ? BorderRadius.zero : BorderRadius.circular(22),
           border: Border.all(color: colors.outlineVariant),
           boxShadow: [
             BoxShadow(
@@ -39,7 +41,7 @@ class PuzzleBoardView extends StatelessWidget {
             return DecoratedBox(
               decoration: BoxDecoration(
                 color: colors.surface.withValues(alpha: .45),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: isImagePuzzle ? BorderRadius.zero : BorderRadius.circular(14),
               ),
               child: Stack(
                 children: [
@@ -58,6 +60,7 @@ class PuzzleBoardView extends StatelessWidget {
                           value: game.tiles[index],
                           mode: game.mode,
                           image: game.image,
+                          personalImageBytes: game.personalImageBytes,
                           onTap: () => context.read<PuzzleProvider>().move(game.tiles[index]),
                         ),
                       ),
@@ -72,11 +75,12 @@ class PuzzleBoardView extends StatelessWidget {
 }
 
 class PuzzleTile extends StatelessWidget {
-  const PuzzleTile({super.key, required this.value, required this.mode, required this.image, required this.onTap});
+  const PuzzleTile({super.key, required this.value, required this.mode, required this.image, required this.personalImageBytes, required this.onTap});
 
   final int value;
   final PuzzleMode mode;
   final PuzzleImage image;
+  final Uint8List? personalImageBytes;
   final VoidCallback onTap;
 
   @override
@@ -84,7 +88,7 @@ class PuzzleTile extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     if (mode == PuzzleMode.image) {
-      return _ImagePuzzleTile(value: value, image: image, onTap: onTap);
+      return _ImagePuzzleTile(value: value, image: image, personalImageBytes: personalImageBytes, onTap: onTap);
     }
 
     return Material(
@@ -111,10 +115,11 @@ class PuzzleTile extends StatelessWidget {
 }
 
 class _ImagePuzzleTile extends StatelessWidget {
-  const _ImagePuzzleTile({required this.value, required this.image, required this.onTap});
+  const _ImagePuzzleTile({required this.value, required this.image, required this.personalImageBytes, required this.onTap});
 
   final int value;
   final PuzzleImage image;
+  final Uint8List? personalImageBytes;
   final VoidCallback onTap;
 
   @override
@@ -140,10 +145,9 @@ class _ImagePuzzleTile extends StatelessWidget {
                   top: -(sourceIndex ~/ size) * tileSize.height,
                   width: tileSize.width * size,
                   height: tileSize.height * size,
-                  child: SvgPicture.asset(
-                    image.assetPath,
-                    fit: BoxFit.fill,
-                  ),
+                  child: personalImageBytes == null
+                      ? SvgPicture.asset(image.assetPath, fit: BoxFit.fill)
+                      : Image.memory(personalImageBytes!, fit: BoxFit.fill),
                 ),
                 DecoratedBox(
                   decoration: BoxDecoration(

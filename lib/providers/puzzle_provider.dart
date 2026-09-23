@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 
@@ -13,6 +14,7 @@ class PuzzleProvider extends ChangeNotifier {
   Difficulty _difficulty = Difficulty.medium;
   PuzzleMode _mode = PuzzleMode.numbers;
   PuzzleImage _image = PuzzleImage.ladybug;
+  Uint8List? _personalImageBytes;
   PuzzleBoard _board;
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
@@ -22,6 +24,7 @@ class PuzzleProvider extends ChangeNotifier {
   Difficulty get difficulty => _difficulty;
   PuzzleMode get mode => _mode;
   PuzzleImage get image => _image;
+  Uint8List? get personalImageBytes => _personalImageBytes;
   List<int> get tiles => _board.tiles;
   bool get isComplete => _isComplete;
   String get formattedTime {
@@ -44,6 +47,12 @@ class PuzzleProvider extends ChangeNotifier {
   void selectImage(PuzzleImage image) {
     if (_image == image) return;
     _image = image;
+    _personalImageBytes = null;
+    newGame();
+  }
+
+  void selectPersonalImage(Uint8List bytes) {
+    _personalImageBytes = bytes;
     newGame();
   }
 

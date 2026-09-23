@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<SettingsProvider>(
         builder: (context, settings, child) => MaterialApp(
-          title: 'Slide Eight',
+          title: 'Puzzle',
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: settings.themeMode,

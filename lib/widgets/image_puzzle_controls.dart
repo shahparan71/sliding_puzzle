@@ -1,52 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:typed_data';
 
 import '../models/puzzle_image.dart';
 
 class ImagePuzzleControls extends StatelessWidget {
-  const ImagePuzzleControls({super.key, required this.selected, required this.onChanged});
+  const ImagePuzzleControls({super.key, required this.selected, required this.onChanged, required this.onPickPersonalImage, required this.hasPersonalImage});
 
   final PuzzleImage selected;
   final ValueChanged<PuzzleImage> onChanged;
+  final VoidCallback onPickPersonalImage;
+  final bool hasPersonalImage;
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<PuzzleImage>(
-      value: selected,
-      decoration: const InputDecoration(
-        labelText: 'Picture',
-        prefixIcon: Icon(Icons.palette_outlined),
-        border: OutlineInputBorder(),
-        isDense: true,
-      ),
-      items: PuzzleImage.values
-          .map(
-            (image) => DropdownMenuItem(
-              value: image,
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: SvgPicture.asset(image.assetPath, width: 32, height: 32),
+    return Column(
+      children: [
+        DropdownButtonFormField<PuzzleImage>(
+          value: selected,
+          decoration: const InputDecoration(
+            labelText: 'Picture',
+            prefixIcon: Icon(Icons.palette_outlined),
+            border: OutlineInputBorder(),
+            isDense: true,
+          ),
+          items: PuzzleImage.values
+              .map(
+                (image) => DropdownMenuItem(
+                  value: image,
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: SvgPicture.asset(image.assetPath, width: 32, height: 32),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(image.label),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Text(image.label),
-                ],
-              ),
-            ),
-          )
-          .toList(),
-      onChanged: (image) {
-        if (image != null) onChanged(image);
-      },
+                ),
+              )
+              .toList(),
+          onChanged: (image) {
+            if (image != null) onChanged(image);
+          },
+        ),
+        const SizedBox(height: 10),
+        OutlinedButton.icon(
+          onPressed: onPickPersonalImage,
+          icon: const Icon(Icons.upload_file_outlined),
+          label: Text(hasPersonalImage ? 'Choose a different image' : 'Use a personal image'),
+        ),
+      ],
     );
   }
 }
 
 class PuzzleImageReference extends StatelessWidget {
-  const PuzzleImageReference({super.key, required this.image});
+  const PuzzleImageReference({super.key, required this.image, required this.personalImageBytes});
 
   final PuzzleImage image;
+  final Uint8List? personalImageBytes;
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +89,17 @@ class PuzzleImageReference extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
-              child: SvgPicture.asset(image.assetPath, fit: BoxFit.cover),
+                child: personalImageBytes == null
+                  ? SvgPicture.asset(image.assetPath, fit: BoxFit.cover)
+                  : Image.memory(personalImageBytes!, fit: BoxFit.cover),
             ),
           ),
         ),
         const SizedBox(height: 8),
-        Text(image.label, style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          personalImageBytes == null ? image.label : 'Personal image',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
       ],
     );
   }
