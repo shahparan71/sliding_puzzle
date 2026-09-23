@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:sliding_puzzle/main.dart';
 
@@ -54,5 +55,30 @@ void main() {
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.dark);
+  });
+
+  testWidgets('switching to image mode renders image puzzle tiles', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.text('Image'));
+    await tester.pump();
+
+    expect(find.text('Slide the picture back together'), findsOneWidget);
+    expect(find.byType(SvgPicture), findsWidgets);
+  });
+
+  testWidgets('image mode lets the player choose the reference picture', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    await tester.tap(find.text('Image'));
+    await tester.pump();
+    expect(find.text('ORIGINAL IMAGE'), findsOneWidget);
+
+    await tester.tap(find.text('Ladybug'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Fruit').last);
+    await tester.pump();
+
+    expect(find.text('Fruit'), findsOneWidget);
   });
 }

@@ -4,11 +4,15 @@ import 'package:flutter/foundation.dart';
 
 import '../models/difficulty.dart';
 import '../models/puzzle_board.dart';
+import '../models/puzzle_mode.dart';
+import '../models/puzzle_image.dart';
 
 class PuzzleProvider extends ChangeNotifier {
   PuzzleProvider() : _board = PuzzleBoard(Difficulty.medium.size);
 
   Difficulty _difficulty = Difficulty.medium;
+  PuzzleMode _mode = PuzzleMode.numbers;
+  PuzzleImage _image = PuzzleImage.ladybug;
   PuzzleBoard _board;
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
@@ -16,6 +20,8 @@ class PuzzleProvider extends ChangeNotifier {
   bool _isComplete = false;
 
   Difficulty get difficulty => _difficulty;
+  PuzzleMode get mode => _mode;
+  PuzzleImage get image => _image;
   List<int> get tiles => _board.tiles;
   bool get isComplete => _isComplete;
   String get formattedTime {
@@ -26,6 +32,18 @@ class PuzzleProvider extends ChangeNotifier {
 
   void selectDifficulty(Difficulty difficulty) {
     _difficulty = difficulty;
+    newGame();
+  }
+
+  void selectMode(PuzzleMode mode) {
+    if (_mode == mode) return;
+    _mode = mode;
+    newGame();
+  }
+
+  void selectImage(PuzzleImage image) {
+    if (_image == image) return;
+    _image = image;
     newGame();
   }
 
