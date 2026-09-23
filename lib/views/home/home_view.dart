@@ -84,12 +84,16 @@ class HomeView extends StatelessWidget {
                             children: [
                               Expanded(child: board),
                               const SizedBox(width: 18),
-                              SizedBox(width: 190, child: reference),
+                              SizedBox(width: 95, child: reference),
                             ],
                           );
                         }
                         return Column(
-                          children: [reference, const SizedBox(height: 16), board],
+                          children: [
+                            SizedBox(width: constraints.maxWidth * .5, child: reference),
+                            const SizedBox(height: 16),
+                            board,
+                          ],
                         );
                       },
                     ),
