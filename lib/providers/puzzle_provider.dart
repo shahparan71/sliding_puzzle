@@ -17,6 +17,7 @@ class PuzzleProvider extends ChangeNotifier {
   PuzzleBoard _board;
   final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
+  int _moves = 0;
   bool _hasStarted = false;
   bool _isComplete = false;
 
@@ -26,6 +27,7 @@ class PuzzleProvider extends ChangeNotifier {
   Uint8List? get personalImageBytes => _personalImageBytes;
   bool get usePersonalImage => _personalImageBytes != null;
   List<int> get tiles => _board.tiles;
+  int get moves => _moves;
   bool get isComplete => _isComplete;
   String get formattedTime {
     final seconds = _stopwatch.elapsed.inSeconds;
@@ -68,6 +70,7 @@ class PuzzleProvider extends ChangeNotifier {
       ..stop()
       ..reset();
     _board = PuzzleBoard(_difficulty.size);
+    _moves = 0;
     _hasStarted = false;
     _isComplete = false;
     notifyListeners();
@@ -77,6 +80,7 @@ class PuzzleProvider extends ChangeNotifier {
     if (_isComplete) return;
     _startTimer();
     if (!_board.move(tile)) return;
+    _moves++;
 
     if (_board.isSolved) {
       _isComplete = true;

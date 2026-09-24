@@ -19,85 +19,127 @@ class PuzzleView extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(12, 28, 12, 24),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 820),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                PuzzleHeader(
-                  onReset: provider.newGame,
-                  onSettings: () => SettingsView.show(context),
-                ),
-                const SizedBox(height: 18),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${game.difficulty.label.toUpperCase()} ${game.mode == PuzzleMode.image ? 'IMAGE' : 'NUMBER'} PUZZLE',
-                      style: TextStyle(
-                        color: colors.onSurfaceVariant,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.3,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.timer_outlined, size: 18, color: colors.primary),
-                        const SizedBox(width: 6),
-                        Text(
-                          game.formattedTime,
-                          style: TextStyle(color: colors.primary, fontSize: 18, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 28, 16, 24),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 820),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  PuzzleHeader(
+                    onReset: provider.newGame,
+                    onSettings: () => SettingsView.show(context),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: colors.primaryContainer,
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                if (game.mode == PuzzleMode.image)
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final sideBySide = constraints.maxWidth >= 620;
-                      final board = const PuzzleBoardView();
-                      final reference = PuzzleImageReference(
-                        image: game.image,
-                        personalImageBytes: game.personalImageBytes,
-                      );
-                      if (sideBySide) {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Text(
+                          '${game.difficulty.label.toUpperCase()} ${game.mode == PuzzleMode.image ? 'IMAGE' : 'NUMBER'}',
+                          style: TextStyle(
+                            color: colors.onPrimaryContainer,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: colors.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.swipe_rounded, size: 16, color: colors.primary),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${game.moves}',
+                                  style: TextStyle(color: colors.primary, fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: colors.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.timer_outlined, size: 16, color: colors.primary),
+                                const SizedBox(width: 6),
+                                Text(
+                                  game.formattedTime,
+                                  style: TextStyle(color: colors.primary, fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  if (game.mode == PuzzleMode.image)
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final sideBySide = constraints.maxWidth >= 620;
+                        final board = const PuzzleBoardView();
+                        final reference = PuzzleImageReference(
+                          image: game.image,
+                          personalImageBytes: game.personalImageBytes,
+                        );
+                        if (sideBySide) {
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(child: board),
+                              const SizedBox(width: 24),
+                              SizedBox(width: 120, child: reference),
+                            ],
+                          );
+                        }
+                        return Column(
                           children: [
-                            Expanded(child: board),
-                            const SizedBox(width: 18),
-                            SizedBox(width: 95, child: reference),
+                            SizedBox(width: constraints.maxWidth * .4, child: reference),
+                            const SizedBox(height: 24),
+                            board,
                           ],
                         );
-                      }
-                      return Column(
-                        children: [
-                          SizedBox(width: constraints.maxWidth * .5, child: reference),
-                          const SizedBox(height: 16),
-                          board,
-                        ],
-                      );
-                    },
-                  )
-                else
-                  const PuzzleBoardView(),
-                const SizedBox(height: 22),
-                game.isComplete
-                    ? CompletionMessage(onNewGame: provider.newGame)
-                    : Text(
-                        game.mode == PuzzleMode.numbers
-                            ? 'Slide the tiles into numerical order'
-                            : 'Slide the picture back together',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: colors.onSurfaceVariant, fontSize: 15),
-                      ),
-              ],
+                      },
+                    )
+                  else
+                    const PuzzleBoardView(),
+                  const SizedBox(height: 32),
+                  game.isComplete
+                      ? CompletionMessage(onNewGame: provider.newGame, moves: game.moves, time: game.formattedTime)
+                      : AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Text(
+                            game.mode == PuzzleMode.numbers
+                                ? 'Slide the tiles into numerical order'
+                                : 'Slide the picture back together',
+                            key: ValueKey(game.mode),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: colors.onSurfaceVariant, fontSize: 16, fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                ],
+              ),
             ),
           ),
         ),

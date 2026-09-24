@@ -279,22 +279,58 @@ class PuzzleImageReference extends StatelessWidget {
         const SizedBox(height: 8),
         AspectRatio(
           aspectRatio: 1,
-          child: DecoratedBox(
+          child: Container(
             decoration: BoxDecoration(
-              color: colors.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colors.outlineVariant),
+              border: Border.all(color: colors.outlineVariant, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.shadow.withValues(alpha: .1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: personalImageBytes == null
-                  ? SvgPicture.asset(image.assetPath, fit: BoxFit.cover)
-                  : Image.memory(personalImageBytes!, fit: BoxFit.cover),
+              borderRadius: BorderRadius.circular(14),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  personalImageBytes == null
+                      ? SvgPicture.asset(image.assetPath, fit: BoxFit.cover)
+                      : Image.memory(personalImageBytes!, fit: BoxFit.cover),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: .7),
+                            Colors.black.withValues(alpha: 0),
+                          ],
+                        ),
+                      ),
+                      child: Text(
+                        personalImageBytes == null ? image.label : 'Personal',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        //Text(personalImageBytes == null ? image.label : 'Personal image', style: Theme.of(context).textTheme.titleMedium),
       ],
     );
   }
