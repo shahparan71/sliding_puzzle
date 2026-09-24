@@ -25,6 +25,7 @@ class PuzzleProvider extends ChangeNotifier {
   PuzzleMode get mode => _mode;
   PuzzleImage get image => _image;
   Uint8List? get personalImageBytes => _personalImageBytes;
+  bool get usePersonalImage => _personalImageBytes != null;
   List<int> get tiles => _board.tiles;
   bool get isComplete => _isComplete;
   String get formattedTime {
@@ -53,6 +54,12 @@ class PuzzleProvider extends ChangeNotifier {
 
   void selectPersonalImage(Uint8List bytes) {
     _personalImageBytes = bytes;
+    newGame();
+  }
+
+  void clearPersonalImage() {
+    if (_personalImageBytes == null) return;
+    _personalImageBytes = null;
     newGame();
   }
 

@@ -18,10 +18,11 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<SettingsProvider>(
         builder: (context, settings, child) => MaterialApp(
-          title: 'Puzzle',
+          title: 'PuzzlePlay',
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: settings.themeMode,
+          debugShowCheckedModeBanner: false,
           home: const HomeView(),
         ),
       ),
