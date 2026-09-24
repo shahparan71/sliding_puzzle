@@ -10,13 +10,21 @@ class DifficultySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SegmentedButton<Difficulty>(
-      segments: Difficulty.values
-          .map((difficulty) => ButtonSegment(value: difficulty, label: Text(difficulty.label)))
-          .toList(),
-      selected: {selected},
-      onSelectionChanged: (value) => onChanged(value.first),
-      style: const ButtonStyle(visualDensity: VisualDensity.compact),
+    return Center(
+      child: Row(
+        children: [
+          Expanded(
+            child: SegmentedButton<Difficulty>(
+              segments: Difficulty.values
+                  .map((difficulty) => ButtonSegment(value: difficulty, label: Text(difficulty.label)))
+                  .toList(),
+              selected: {selected},
+              onSelectionChanged: (value) => onChanged(value.first),
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

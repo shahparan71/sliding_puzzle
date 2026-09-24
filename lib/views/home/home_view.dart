@@ -7,8 +7,8 @@ import '../../providers/puzzle_provider.dart';
 import '../../widgets/difficulty_selector.dart';
 import '../../widgets/image_puzzle_controls.dart';
 import '../../widgets/puzzle_header.dart';
-import '../settings/settings_view.dart';
 import '../puzzle/puzzle_view.dart';
+import '../settings/settings_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -21,9 +21,7 @@ class HomeView extends StatelessWidget {
   }
 
   void _startPuzzle(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const PuzzleView()),
-    );
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const PuzzleView()));
   }
 
   @override
@@ -35,24 +33,18 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
+          padding: const EdgeInsets.fromLTRB(12, 28, 12, 28),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 560),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  PuzzleHeader(
-                    onReset: provider.newGame,
-                    onSettings: () => SettingsView.show(context),
-                  ),
+                  PuzzleHeader(onReset: provider.newGame, onSettings: () => SettingsView.show(context)),
                   const SizedBox(height: 34),
                   Text(
                     'Set up your puzzle',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: colors.primary, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -62,27 +54,30 @@ class HomeView extends StatelessWidget {
                   const SizedBox(height: 28),
                   _SetupSection(
                     title: '1. Puzzle type',
-                    child: SegmentedButton<PuzzleMode>(
-                      segments: PuzzleMode.values
-                          .map(
-                            (mode) => ButtonSegment(
-                              value: mode,
-                              icon: Icon(mode == PuzzleMode.numbers ? Icons.pin_outlined : Icons.image_outlined),
-                              label: Text(mode.label),
-                            ),
-                          )
-                          .toList(),
-                      selected: {game.mode},
-                      onSelectionChanged: (value) => provider.selectMode(value.first),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SegmentedButton<PuzzleMode>(
+                            segments: PuzzleMode.values
+                                .map(
+                                  (mode) => ButtonSegment(
+                                    value: mode,
+                                    icon: Icon(mode == PuzzleMode.numbers ? Icons.pin_outlined : Icons.image_outlined),
+                                    label: Text(mode.label),
+                                  ),
+                                )
+                                .toList(),
+                            selected: {game.mode},
+                            onSelectionChanged: (value) => provider.selectMode(value.first),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 18),
                   _SetupSection(
                     title: '2. Difficulty',
-                    child: DifficultySelector(
-                      selected: game.difficulty,
-                      onChanged: provider.selectDifficulty,
-                    ),
+                    child: DifficultySelector(selected: game.difficulty, onChanged: provider.selectDifficulty),
                   ),
                   if (game.mode == PuzzleMode.image) ...[
                     const SizedBox(height: 18),
@@ -102,10 +97,7 @@ class HomeView extends StatelessWidget {
                   FilledButton.icon(
                     onPressed: () => _startPuzzle(context),
                     icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4),
-                      child: Text('Start puzzle'),
-                    ),
+                    label: const Padding(padding: EdgeInsets.symmetric(vertical: 4), child: Text('Start puzzle')),
                   ),
                 ],
               ),
