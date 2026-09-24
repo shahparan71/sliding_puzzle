@@ -94,50 +94,72 @@ class PuzzleView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  if (game.mode == PuzzleMode.image)
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final sideBySide = constraints.maxWidth >= 620;
-                        final board = const PuzzleBoardView();
-                        final reference = PuzzleImageReference(
-                          image: game.image,
-                          personalImageBytes: game.personalImageBytes,
-                        );
-                        if (sideBySide) {
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(child: board),
-                              const SizedBox(width: 24),
-                              SizedBox(width: 120, child: reference),
-                            ],
-                          );
-                        }
-                        return Column(
-                          children: [
-                            SizedBox(width: constraints.maxWidth * .4, child: reference),
-                            const SizedBox(height: 24),
-                            board,
-                          ],
-                        );
-                      },
-                    )
-                  else
-                    const PuzzleBoardView(),
-                  const SizedBox(height: 32),
-                  game.isComplete
-                      ? CompletionMessage(onNewGame: provider.newGame, moves: game.moves, time: game.formattedTime)
-                      : AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: Text(
-                            game.mode == PuzzleMode.numbers
-                                ? 'Slide the tiles into numerical order'
-                                : 'Slide the picture back together',
-                            key: ValueKey(game.mode),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: colors.onSurfaceVariant, fontSize: 16, fontStyle: FontStyle.italic),
+                  Builder(
+                    builder: (context) {
+                      final boardWidget = Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          AnimatedOpacity(
+                            duration: const Duration(milliseconds: 500),
+                            opacity: game.isComplete ? 0.35 : 1.0,
+                            child: IgnorePointer(
+                              ignoring: game.isComplete,
+                              child: const PuzzleBoardView(),
+                            ),
                           ),
-                        ),
+                          if (game.isComplete)
+                            CompletionMessage(
+                              onNewGame: provider.newGame,
+                              moves: game.moves,
+                              time: game.formattedTime,
+                            ),
+                        ],
+                      );
+
+                      if (game.mode == PuzzleMode.image) {
+                        return LayoutBuilder(
+                          builder: (context, constraints) {
+                            final sideBySide = constraints.maxWidth >= 620;
+                            final reference = PuzzleImageReference(
+                              image: game.image,
+                              personalImageBytes: game.personalImageBytes,
+                            );
+                            if (sideBySide) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(child: boardWidget),
+                                  const SizedBox(width: 24),
+                                  SizedBox(width: 120, child: reference),
+                                ],
+                              );
+                            }
+                            return Column(
+                              children: [
+                                SizedBox(width: constraints.maxWidth * .4, child: reference),
+                                const SizedBox(height: 24),
+                                boardWidget,
+                              ],
+                            );
+                          },
+                        );
+                      }
+                      
+                      return boardWidget;
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  AnimatedOpacity(
+                    opacity: game.isComplete ? 0.0 : 1.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Text(
+                      game.mode == PuzzleMode.numbers
+                          ? 'Slide the tiles into numerical order'
+                          : 'Slide the picture back together',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: colors.onSurfaceVariant, fontSize: 16, fontStyle: FontStyle.italic),
+                    ),
+                  ),
                 ],
               ),
             ),
