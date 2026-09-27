@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "838027347653",
+    "project_id": "puzzleplay-91b59",
+    "storage_bucket": "puzzleplay-91b59.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838027347653:android:a952662c71b04b860e12ac",
+        "android_client_info": {
+          "package_name": "com.game.sliding.puzzle.paran.bd.sliding_puzzle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBowab51jDo12E78Zc-ajATTZIuE-YEl_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
