@@ -159,24 +159,29 @@ class _CompletionMessageState extends State<CompletionMessage> with TickerProvid
                       const SizedBox(height: 14),
 
                       // Victory Title
-                      ShaderMask(
-                        shaderCallback: (bounds) => const LinearGradient(
-                          colors: [
-                            Color(0xFFFFF9C4),
-                            Color(0xFFFFD54F),
-                            Color(0xFFFFB300),
-                          ],
-                        ).createShader(bounds),
-                        child: const Text(
-                          'PUZZLE SOLVED!',
-                          style: TextStyle(
-                            fontFamily: 'Georgia',
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 2.0,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (bounds) => const LinearGradient(
+                              colors: [
+                                Color(0xFFFFF9C4),
+                                Color(0xFFFFD54F),
+                                Color(0xFFFFB300),
+                              ],
+                            ).createShader(bounds),
+                            child: const Text(
+                              'PUZZLE\nSOLVED!',
+                              style: TextStyle(
+                                fontFamily: 'Georgia',
+                                color: Colors.white,
+                                fontSize: 26,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 2.0,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(

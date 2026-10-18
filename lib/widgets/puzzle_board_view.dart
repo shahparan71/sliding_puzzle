@@ -270,14 +270,23 @@ class _PuzzleTileState extends State<PuzzleTile> {
                 Color(0xFFE5BB87),
               ],
             ),
-            // 3D beveled edges for tactile block look
-            border: Border(
-              top: const BorderSide(color: Color(0xFFFFFFFF), width: 2.2),
-              left: const BorderSide(color: Color(0xFFFFF8EE), width: 1.8),
-              right: const BorderSide(color: Color(0xFF9E683E), width: 2.0),
-              bottom: const BorderSide(color: Color(0xFF7E4A25), width: 2.8),
+            // Uniform border required by Flutter when borderRadius is specified
+            border: Border.all(
+              color: const Color(0xFFD4A373),
+              width: 1.5,
             ),
             boxShadow: [
+              // Top-left highlight and bottom-right shadow for 3D bevel depth
+              const BoxShadow(
+                color: Color(0x99FFFFFF),
+                offset: Offset(-1, -1),
+                blurRadius: 0,
+              ),
+              const BoxShadow(
+                color: Color(0x607E4A25),
+                offset: Offset(1.5, 1.5),
+                blurRadius: 0,
+              ),
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.35),
                 blurRadius: 3,
@@ -392,28 +401,14 @@ class _PuzzleTileState extends State<PuzzleTile> {
                           ? SvgPicture.asset(widget.image.assetPath, fit: BoxFit.fill)
                           : Image.memory(widget.personalImageBytes!, fit: BoxFit.fill),
                     ),
-                    // Micro 3D beveled edge highlight & shadow for physical tile feel
+                    // Uniform border compatible with borderRadius
                     Positioned.fill(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(size == 3 ? 6 : 4),
-                          border: Border(
-                            top: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.35),
-                              width: 1.2,
-                            ),
-                            left: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.25),
-                              width: 1.0,
-                            ),
-                            right: BorderSide(
-                              color: Colors.black.withValues(alpha: 0.35),
-                              width: 1.2,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.black.withValues(alpha: 0.45),
-                              width: 1.8,
-                            ),
+                          border: Border.all(
+                            color: Colors.black.withValues(alpha: 0.25),
+                            width: 1.0,
                           ),
                         ),
                       ),
