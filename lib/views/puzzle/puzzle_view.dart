@@ -74,8 +74,8 @@ class PuzzleView extends StatelessWidget {
     final provider = context.read<PuzzleProvider>();
     final colors = Theme.of(context).colorScheme;
 
-    final isWood = game.mode == PuzzleMode.numbers;
-    final modeLabel = isWood ? 'WOODEN' : 'IMAGE';
+    final isNumberMode = game.mode == PuzzleMode.numbers;
+    final modeLabel = isNumberMode ? 'NUMBERS' : 'IMAGE';
     final diffLabel = game.difficulty.label.toUpperCase();
 
     return Scaffold(
@@ -130,14 +130,14 @@ class PuzzleView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: isWood
+                              colors: isNumberMode
                                   ? const [Color(0xFF8D5328), Color(0xFFC7844A)]
                                   : [colors.primary, colors.secondary],
                             ),
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: (isWood ? const Color(0xFF8D5328) : colors.primary).withValues(alpha: 0.35),
+                                color: (isNumberMode ? const Color(0xFF8D5328) : colors.primary).withValues(alpha: 0.35),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -147,7 +147,7 @@ class PuzzleView extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                isWood ? Icons.grid_view_rounded : Icons.photo_library_rounded,
+                                isNumberMode ? Icons.pin_rounded : Icons.photo_library_rounded,
                                 size: 14,
                                 color: Colors.white,
                               ),
@@ -276,7 +276,7 @@ class PuzzleView extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // Bottom Action Tip / Interactive bar (Safe wrapping with Expanded)
+                  // Bottom Action Tip / Interactive bar
                   AnimatedOpacity(
                     opacity: game.isComplete ? 0.0 : 1.0,
                     duration: const Duration(milliseconds: 300),
@@ -290,14 +290,14 @@ class PuzzleView extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(
-                            isWood ? Icons.swap_horiz_rounded : Icons.auto_awesome_rounded,
+                            isNumberMode ? Icons.swap_horiz_rounded : Icons.auto_awesome_rounded,
                             size: 18,
                             color: colors.primary,
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              isWood
+                              isNumberMode
                                   ? 'Tap any tile adjacent to the empty slot to slide it'
                                   : 'Slide tiles to restore the whole image',
                               textAlign: TextAlign.center,

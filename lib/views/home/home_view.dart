@@ -126,19 +126,19 @@ class HomeView extends StatelessWidget {
                   _SectionHeader(
                     icon: Icons.auto_awesome_motion_rounded,
                     title: '1. Puzzle Style',
-                    subtitle: 'Choose between classic wood or split photos',
+                    subtitle: 'Choose between numbered tiles or picture tiles',
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
                         child: _ModeCard(
-                          title: 'Classic Wood',
-                          subtitle: 'Carved numbers with physical wood grain',
-                          icon: Icons.tag_rounded,
+                          title: 'Number Puzzle',
+                          subtitle: 'Classic numbered blocks in numerical order',
+                          icon: Icons.pin_rounded,
                           accentColor: const Color(0xFFC7844A),
                           isSelected: game.mode == PuzzleMode.numbers,
-                          badge: 'Classic',
+                          badge: 'Numbers',
                           onTap: () => provider.selectMode(PuzzleMode.numbers),
                         ),
                       ),

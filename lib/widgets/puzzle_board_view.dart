@@ -13,13 +13,13 @@ class PuzzleBoardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final game = context.watch<PuzzleProvider>();
-    final isWoodTheme = game.mode == PuzzleMode.numbers;
+    final isNumberMode = game.mode == PuzzleMode.numbers;
 
     return AspectRatio(
       aspectRatio: 1,
       child: Container(
         padding: const EdgeInsets.all(8),
-        decoration: isWoodTheme ? _buildWoodBoardDecoration() : _buildModernBoardDecoration(context),
+        decoration: isNumberMode ? _buildNumberBoardDecoration() : _buildModernBoardDecoration(context),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final size = game.difficulty.size;
@@ -36,7 +36,7 @@ class PuzzleBoardView extends StatelessWidget {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isWoodTheme ? const Color(0xFF2C1608) : const Color(0xFF131A22),
+                        color: isNumberMode ? const Color(0xFF2C1608) : const Color(0xFF131A22),
                         boxShadow: const [
                           BoxShadow(
                             color: Colors.black54,
@@ -49,7 +49,7 @@ class PuzzleBoardView extends StatelessWidget {
                     ),
                   ),
 
-                  // Empty slot recessed floor with subtle indicator arrow (as in reference image 1)
+                  // Empty slot recessed floor with indicator icon
                   if (blankIdx >= 0)
                     Positioned(
                       left: (blankIdx % size) * (tileSize + gap),
@@ -57,7 +57,7 @@ class PuzzleBoardView extends StatelessWidget {
                       width: tileSize,
                       height: tileSize,
                       child: _EmptySlotView(
-                        isWood: isWoodTheme,
+                        isNumberTheme: isNumberMode,
                         size: size,
                         blankIndex: blankIdx,
                       ),
@@ -95,9 +95,8 @@ class PuzzleBoardView extends StatelessWidget {
     );
   }
 
-  BoxDecoration _buildWoodBoardDecoration() {
+  BoxDecoration _buildNumberBoardDecoration() {
     return BoxDecoration(
-      // Multi-layer beveled wood frame matching Image 1
       gradient: const LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -158,17 +157,17 @@ class PuzzleBoardView extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Empty Slot View (Recessed 3D Tray + Subtle Directional Arrow)
+// Empty Slot View (Recessed 3D Tray)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _EmptySlotView extends StatelessWidget {
   const _EmptySlotView({
-    required this.isWood,
+    required this.isNumberTheme,
     required this.size,
     required this.blankIndex,
   });
 
-  final bool isWood;
+  final bool isNumberTheme;
   final int size;
   final int blankIndex;
 
@@ -177,10 +176,10 @@ class _EmptySlotView extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(0.5),
       decoration: BoxDecoration(
-        color: isWood ? const Color(0xFF261205) : const Color(0xFF10171F),
+        color: isNumberTheme ? const Color(0xFF261205) : const Color(0xFF10171F),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(
-          color: isWood ? const Color(0xFF180A02) : const Color(0xFF080D12),
+          color: isNumberTheme ? const Color(0xFF180A02) : const Color(0xFF080D12),
           width: 1.5,
         ),
         boxShadow: const [
@@ -195,7 +194,7 @@ class _EmptySlotView extends StatelessWidget {
         child: Icon(
           Icons.touch_app_rounded,
           size: 20,
-          color: (isWood ? const Color(0xFFDCA16A) : Colors.white).withValues(alpha: 0.15),
+          color: (isNumberTheme ? const Color(0xFFDCA16A) : Colors.white).withValues(alpha: 0.18),
         ),
       ),
     );
@@ -203,7 +202,7 @@ class _EmptySlotView extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Puzzle Tile Widget (Wood 3D or Photo Tile)
+// Puzzle Tile Widget (Numbers Tile or Photo Tile)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class PuzzleTile extends StatefulWidget {
@@ -240,12 +239,12 @@ class _PuzzleTileState extends State<PuzzleTile> {
     if (widget.mode == PuzzleMode.image) {
       return _buildImageTile(context);
     }
-    return _buildWoodTile(context);
+    return _buildNumberTile(context);
   }
 
-  Widget _buildWoodTile(BuildContext context) {
+  Widget _buildNumberTile(BuildContext context) {
     final size = widget.totalTiles <= 9 ? 3 : (widget.totalTiles <= 16 ? 4 : 5);
-    final fontSize = size == 3 ? 46.0 : (size == 4 ? 34.0 : 26.0);
+    final targetFontSize = size == 3 ? 48.0 : (size == 4 ? 36.0 : 26.0);
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
@@ -260,21 +259,21 @@ class _PuzzleTileState extends State<PuzzleTile> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size == 3 ? 8 : 6),
-            // Wood surface gradient (Light warm pine / maple matching image 1)
+            // Light, warm, high-contrast face
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFFFBE4C8),
-                Color(0xFFF2D1A9),
-                Color(0xFFE4BC8F),
-                Color(0xFFD6A977),
+                Color(0xFFFFF2DF),
+                Color(0xFFFCE3C5),
+                Color(0xFFF3CE9F),
+                Color(0xFFE5BB87),
               ],
             ),
-            // Realistic 3D beveled wood edges (light at top/left, shadow at bottom/right)
+            // 3D beveled edges for tactile block look
             border: Border(
-              top: const BorderSide(color: Color(0xFFFFF7ED), width: 2.2),
-              left: const BorderSide(color: Color(0xFFFFF0DC), width: 1.8),
+              top: const BorderSide(color: Color(0xFFFFFFFF), width: 2.2),
+              left: const BorderSide(color: Color(0xFFFFF8EE), width: 1.8),
               right: const BorderSide(color: Color(0xFF9E683E), width: 2.0),
               bottom: const BorderSide(color: Color(0xFF7E4A25), width: 2.8),
             ),
@@ -287,15 +286,9 @@ class _PuzzleTileState extends State<PuzzleTile> {
             ],
           ),
           child: Stack(
+            fit: StackFit.expand,
             children: [
-              // Subtle fine wood grain streaks
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _WoodGrainPainter(),
-                ),
-              ),
-
-              // Subtle guide arrow towards blank slot if adjacent (as shown in reference image 1!)
+              // Directional hint towards blank slot if adjacent
               if (widget.isAdjacentToBlank && widget.directionToBlank != null)
                 Positioned(
                   left: widget.directionToBlank!.$1 == 1 ? null : 4,
@@ -305,29 +298,22 @@ class _PuzzleTileState extends State<PuzzleTile> {
                   child: _buildDirectionHint(widget.directionToBlank!),
                 ),
 
-              // Carved / Engraved Number
+              // Prominently Visible Number (High Contrast, Bold, Scaled to Fit)
               Center(
-                child: Text(
-                  '${widget.value}',
-                  style: TextStyle(
-                    fontFamily: 'Georgia',
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.w900,
-                    color: const Color(0xFF5A2A0C), // Dark warm mahogany
-                    shadows: const [
-                      // Inset shadow creating engraved look
-                      Shadow(
-                        color: Color(0xAA1C0A02),
-                        offset: Offset(0, 1.8),
-                        blurRadius: 1.2,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Text(
+                      '${widget.value}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: targetFontSize,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFF2C1304), // Deep, bold, high-contrast dark brown
+                        height: 1.0,
                       ),
-                      // Bottom highlight for carved bevel edge
-                      Shadow(
-                        color: Color(0x80FFFFFF),
-                        offset: Offset(0, -1),
-                        blurRadius: 0.5,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -353,13 +339,13 @@ class _PuzzleTileState extends State<PuzzleTile> {
     return Container(
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: const Color(0x335A2A0C),
+        color: const Color(0x282C1304),
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
         size: 11,
-        color: const Color(0xFF5A2A0C).withValues(alpha: 0.5),
+        color: const Color(0xFF2C1304).withValues(alpha: 0.55),
       ),
     );
   }
@@ -441,35 +427,4 @@ class _PuzzleTileState extends State<PuzzleTile> {
       ),
     );
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Subtle Wood Grain Texture Painter
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _WoodGrainPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paintLight = Paint()
-      ..color = Colors.white.withValues(alpha: 0.08)
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
-
-    final paintDark = Paint()
-      ..color = const Color(0xFF6B3E1F).withValues(alpha: 0.06)
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke;
-
-    final step = size.height / 7;
-    for (var i = 1; i <= 6; i++) {
-      final y = i * step;
-      final path = Path()
-        ..moveTo(0, y + (i % 2 == 0 ? 1 : -1))
-        ..quadraticBezierTo(size.width * 0.5, y + (i % 3 == 0 ? 2 : -2), size.width, y);
-      canvas.drawPath(path, i % 2 == 0 ? paintLight : paintDark);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
