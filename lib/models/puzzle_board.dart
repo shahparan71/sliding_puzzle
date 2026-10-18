@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 
 class PuzzleBoard {
   PuzzleBoard(this.size) : tiles = _scramble(size);
@@ -8,12 +8,32 @@ class PuzzleBoard {
 
   bool get isSolved => tiles.asMap().entries.every((entry) => entry.value == (entry.key + 1) % tiles.length);
 
-  bool move(int tile) {
+  bool canMove(int tile) {
+    if (tile == 0) return false;
     final tileIndex = tiles.indexOf(tile);
     final blankIndex = tiles.indexOf(0);
+    if (tileIndex < 0 || blankIndex < 0) return false;
     final rowDistance = (tileIndex ~/ size - blankIndex ~/ size).abs();
     final columnDistance = (tileIndex % size - blankIndex % size).abs();
-    if (rowDistance + columnDistance != 1) return false;
+    return (rowDistance + columnDistance == 1);
+  }
+
+  /// Returns direction offset (dx, dy) from the given tile to the blank tile, or null if not adjacent.
+  (int, int)? directionToBlank(int tile) {
+    if (!canMove(tile)) return null;
+    final tileIndex = tiles.indexOf(tile);
+    final blankIndex = tiles.indexOf(0);
+    final tileRow = tileIndex ~/ size;
+    final tileCol = tileIndex % size;
+    final blankRow = blankIndex ~/ size;
+    final blankCol = blankIndex % size;
+    return (blankCol - tileCol, blankRow - tileRow);
+  }
+
+  bool move(int tile) {
+    if (!canMove(tile)) return false;
+    final tileIndex = tiles.indexOf(tile);
+    final blankIndex = tiles.indexOf(0);
     tiles[blankIndex] = tile;
     tiles[tileIndex] = 0;
     return true;
