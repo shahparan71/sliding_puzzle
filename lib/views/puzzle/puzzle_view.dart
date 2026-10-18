@@ -99,93 +99,105 @@ class PuzzleView extends StatelessWidget {
                   ),
                   const SizedBox(height: 18),
 
-                  // Interactive Status Bar (Responsive)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          colors.surfaceContainerHigh.withValues(alpha: 0.8),
-                          colors.surfaceContainerHighest.withValues(alpha: 0.8),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.6)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: colors.shadow.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        // Mode Badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: isNumberMode
-                                  ? const [Color(0xFF8D5328), Color(0xFFC7844A)]
-                                  : [colors.primary, colors.secondary],
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: (isNumberMode ? const Color(0xFF8D5328) : colors.primary).withValues(alpha: 0.35),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
+                  // Interactive Status Bar with Target Picture preview on the right of chips
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              colors.surfaceContainerHigh.withValues(alpha: 0.8),
+                              colors.surfaceContainerHighest.withValues(alpha: 0.8),
                             ],
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                isNumberMode ? Icons.pin_rounded : Icons.photo_library_rounded,
-                                size: 14,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                '$modeLabel · $diffLabel',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 1.1,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Moves and Timer Chips
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _InteractiveStatChip(
-                              icon: Icons.touch_app_rounded,
-                              label: '${game.moves}',
-                              unit: 'moves',
-                              color: colors.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            _InteractiveStatChip(
-                              icon: Icons.timer_rounded,
-                              label: game.formattedTime,
-                              unit: '',
-                              color: const Color(0xFF00897B),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.6)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: colors.shadow.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Mode Badge
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: isNumberMode
+                                      ? const [Color(0xFF8D5328), Color(0xFFC7844A)]
+                                      : [colors.primary, colors.secondary],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: (isNumberMode ? const Color(0xFF8D5328) : colors.primary).withValues(alpha: 0.35),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    isNumberMode ? Icons.pin_rounded : Icons.photo_library_rounded,
+                                    size: 14,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    '$modeLabel · $diffLabel',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 10,),
+                            // Moves and Timer Chips + Target Preview on the right side
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _InteractiveStatChip(
+                                  icon: Icons.touch_app_rounded,
+                                  label: '${game.moves}',
+                                  unit: 'moves',
+                                  color: colors.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                _InteractiveStatChip(
+                                  icon: Icons.timer_rounded,
+                                  label: game.formattedTime,
+                                  unit: '',
+                                  color: const Color(0xFF00897B),
+                                ),
+                                // Always visible target image preview to the right of Moves & Timer chips
+
+                              ],
+                            ),
+
+                          ],
+                        ),
+                      ),
+                      if (game.mode == PuzzleMode.image) ...[
+                        const SizedBox(width: 10),
+                        _TargetPreviewThumbnail(
+                          game: game,
+                          onTap: () => _showImagePreviewDialog(context, game),
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                   const SizedBox(height: 20),
 
@@ -218,55 +230,38 @@ class PuzzleView extends StatelessWidget {
                         return LayoutBuilder(
                           builder: (context, constraints) {
                             final sideBySide = constraints.maxWidth >= 640;
-                            final reference = Column(
-                              children: [
-                                PuzzleImageReference(
-                                  image: game.image,
-                                  personalImageBytes: game.personalImageBytes,
-                                ),
-                                const SizedBox(height: 10),
-                                TextButton.icon(
-                                  onPressed: () => _showImagePreviewDialog(context, game),
-                                  icon: const Icon(Icons.fullscreen_rounded, size: 18),
-                                  label: const Text('Enlarge Photo'),
-                                  style: TextButton.styleFrom(
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                ),
-                              ],
-                            );
-
                             if (sideBySide) {
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(child: boardWidget),
                                   const SizedBox(width: 24),
-                                  SizedBox(width: 140, child: reference),
+                                  SizedBox(
+                                    width: 140,
+                                    child: Column(
+                                      children: [
+                                        PuzzleImageReference(
+                                          image: game.image,
+                                          personalImageBytes: game.personalImageBytes,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        TextButton.icon(
+                                          onPressed: () => _showImagePreviewDialog(context, game),
+                                          icon: const Icon(Icons.fullscreen_rounded, size: 18),
+                                          label: const Text('Enlarge Photo'),
+                                          style: TextButton.styleFrom(
+                                            visualDensity: VisualDensity.compact,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               );
                             }
 
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    OutlinedButton.icon(
-                                      onPressed: () => _showImagePreviewDialog(context, game),
-                                      icon: const Icon(Icons.image_search_rounded, size: 16),
-                                      label: const Text('View Target Picture'),
-                                      style: OutlinedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                boardWidget,
-                              ],
-                            );
+                            // On mobile/portrait, the target image is now permanently visible in the status bar
+                            return boardWidget;
                           },
                         );
                       }
@@ -299,7 +294,7 @@ class PuzzleView extends StatelessWidget {
                             child: Text(
                               isNumberMode
                                   ? 'Tap any tile adjacent to the empty slot to slide it'
-                                  : 'Slide tiles to restore the whole image',
+                                  : 'Slide tiles to restore the image (preview in top-right)',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: colors.onSurfaceVariant,
@@ -315,6 +310,73 @@ class PuzzleView extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TargetPreviewThumbnail extends StatelessWidget {
+  const _TargetPreviewThumbnail({
+    required this.game,
+    required this.onTap,
+  });
+
+  final PuzzleProvider game;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return Tooltip(
+      message: 'Target picture (tap to enlarge)',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 90,
+          height: 90,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: colors.primary.withValues(alpha: 0.7),
+              width: 1.8,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colors.primary.withValues(alpha: 0.25),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: game.personalImageBytes == null
+                    ? SvgPicture.asset(game.image.assetPath, fit: BoxFit.cover)
+                    : Image.memory(game.personalImageBytes!, fit: BoxFit.cover),
+              ),
+              Positioned(
+                bottom: 1,
+                right: 1,
+                child: Container(
+                  padding: const EdgeInsets.all(1.5),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.65),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: const Icon(
+                    Icons.zoom_in_rounded,
+                    size: 9,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
